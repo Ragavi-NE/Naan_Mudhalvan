@@ -1,0 +1,104 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Naan Mudhalvan Project</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f5fa;
+            margin: 0;
+            padding: 25px;
+        }
+        header {
+            background: #183b70;
+            color: white;
+            text-align: center;
+            padding: 30px 15px;
+            border-radius: 12px;
+        }
+        .documents {
+            max-width: 800px;
+            margin: 25px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+        }
+        .file {
+            display: block;
+            padding: 15px;
+            margin: 10px 0;
+            background: #eaf1ff;
+            color: #183b70;
+            text-decoration: none;
+            border-radius: 8px;
+        }
+        .file:hover {
+            background: #d4e3ff;
+        }
+        footer {
+            text-align: center;
+            color: #666;
+            margin-top: 25px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Naan Mudhalvan Project</h1>
+    <p>Project Documents and Learning Resources</p>
+</header>
+
+<div class="documents">
+    <h2>Our Project Documents</h2>
+    <p>Click any document below to view or download it.</p>
+    <div id="files">Loading documents...</div>
+</div>
+
+<footer>
+    Naan Mudhalvan Project
+</footer>
+
+<script>
+const api = "https://api.github.com/repos/Ragavi-NE/Naan-Mudhalvan-/contents/";
+
+fetch(api)
+.then(response => {
+    if (!response.ok) throw new Error("Unable to load files");
+    return response.json();
+})
+.then(files => {
+    const container = document.getElementById("files");
+
+    const documents = files.filter(file =>
+        file.type === "file" &&
+        /\.(pdf|doc|docx|ppt|pptx|xls|xlsx|xml|zip)$/i.test(file.name)
+    );
+
+    container.innerHTML = "";
+
+    if (documents.length === 0) {
+        container.textContent = "No documents found.";
+        return;
+    }
+
+    documents.forEach(file => {
+        const link = document.createElement("a");
+        link.className = "file";
+        link.href = file.html_url;
+        link.target = "_blank";
+        link.rel = "noopener";
+        link.textContent = "📄 " + file.name + " — View / Download";
+        container.appendChild(link);
+    });
+})
+.catch(error => {
+    document.getElementById("files").textContent =
+        "Could not load documents. Please check the repository.";
+});
+</script>
+
+</body>
+</html>
